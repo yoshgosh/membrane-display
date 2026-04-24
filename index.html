@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Membrane Display</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f2f2f7;
+      color: #1c1c1e;
+      min-height: 100vh;
+      user-select: none;
+    }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 72px 40px;
+      text-align: center;
+    }
+    .hero h1 {
+      margin: 0 0 12px;
+      font-size: 2.8rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    .hero p {
+      margin: 0 0 32px;
+      font-size: 1.1rem;
+      opacity: 0.88;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-block;
+      padding: 13px 30px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.88; }
+    .btn-white  { background: white; color: #667eea; }
+    .btn-outline { background: transparent; border: 2px solid white; color: white; margin-left: 12px; }
+    .btn-primary { background: #667eea; color: white; }
+    .btn-ghost   { background: transparent; border: 2px solid #667eea; color: #667eea; }
+
+    /* Cards */
+    .section { padding: 32px 24px; }
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+    }
+    .card h2 {
+      margin: 0 0 16px;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+    .card p {
+      margin: 0 0 16px;
+      line-height: 1.7;
+      color: #3c3c43;
+    }
+    .card a { color: #667eea; text-decoration: none; font-weight: 500; }
+    .card a:hover { text-decoration: underline; }
+
+    /* Form */
+    .form-group { margin-bottom: 16px; }
+    label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 0.9rem; color: #3c3c43; }
+    input[type=text], input[type=email] {
+      width: 100%;
+      border: 1.5px solid #d1d1d6;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.15s;
+      background: #f9f9fb;
+    }
+    input[type=text]:focus, input[type=email]:focus {
+      border-color: #667eea;
+      background: white;
+    }
+    .btn-row { display: flex; gap: 12px; margin-top: 20px; }
+
+    /* Color grid */
+    .grid-title {
+      padding: 0 24px;
+      margin: 8px 0 16px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #3c3c43;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      padding: 0 24px 32px;
+    }
+    .tile {
+      border-radius: 14px;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: 0.3px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+
+    /* Stats row */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .stat {
+      background: #f2f2f7;
+      border-radius: 12px;
+      padding: 18px;
+      text-align: center;
+    }
+    .stat-value { font-size: 1.8rem; font-weight: 700; color: #667eea; }
+    .stat-label { font-size: 0.8rem; color: #8e8e93; margin-top: 4px; }
+
+    /* Fixed hint — lives in <body> but must stay viewport-relative even when filter on <html> */
+    #hint {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(0,0,0,0.72);
+      color: white;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      pointer-events: none;
+      z-index: 9999;
+      backdrop-filter: blur(4px);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hero">
+    <h1>Membrane Display</h1>
+    <p>画面を長押しすると、その地点が凹むような擬似触覚を体験できます</p>
+    <button class="btn btn-white" onclick="alert('ボタンは正常に動作しています')">インタラクティブなボタン</button>
+    <button class="btn btn-outline" onclick="alert('こちらも動作します')">もう一つのボタン</button>
+  </div>
+
+  <div class="section">
+
+    <!-- Text card -->
+    <div class="card">
+      <h2>テキストコンテンツ</h2>
+      <p>このエフェクトはSVGの <code>feDisplacementMap</code> フィルターと Canvas オーバーレイを組み合わせています。フィルターは <code>&lt;html&gt;</code> 要素に適用されているため、ページ内のHTML構造（テキスト・ボタン・入力欄）には一切干渉しません。</p>
+      <p>マウスボタンを押し続けると、押下地点を中心とした凹み（幾何学的歪み）と、リム部分への影（光学的減光）が現れます。</p>
+      <a href="#" onclick="return false">クリック可能なリンク（動作確認用）</a>
+    </div>
+
+    <!-- Stats -->
+    <div class="card">
+      <h2>統計情報</h2>
+      <div class="stats">
+        <div class="stat"><div class="stat-value">60fps</div><div class="stat-label">描画レート</div></div>
+        <div class="stat"><div class="stat-value">220px</div><div class="stat-label">凹み半径</div></div>
+        <div class="stat"><div class="stat-value">0ms</div><div class="stat-label">入力遅延</div></div>
+      </div>
+      <p style="margin:0;color:#8e8e93;font-size:0.9rem;">アニメーションは指数関数的イージングで制御され、フレームレートに依存しない滑らかな動作を実現しています。</p>
+    </div>
+
+    <!-- Form card -->
+    <div class="card">
+      <h2>フォーム要素</h2>
+      <div class="form-group">
+        <label for="name">名前</label>
+        <input type="text" id="name" placeholder="ここに入力できます（エフェクト中も有効）">
+      </div>
+      <div class="form-group">
+        <label for="email">メールアドレス</label>
+        <input type="email" id="email" placeholder="example@example.com">
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="alert('送信ボタンが押されました')">送信</button>
+        <button class="btn btn-ghost" onclick="document.getElementById('name').value='';document.getElementById('email').value=''">クリア</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Color tiles -->
+  <p class="grid-title">カラーグリッド</p>
+  <div class="grid">
+    <div class="tile" style="background:#e74c3c;">Red</div>
+    <div class="tile" style="background:#e67e22;">Orange</div>
+    <div class="tile" style="background:#f1c40f;color:#333;">Yellow</div>
+    <div class="tile" style="background:#2ecc71;">Green</div>
+    <div class="tile" style="background:#3498db;">Blue</div>
+    <div class="tile" style="background:#9b59b6;">Purple</div>
+  </div>
+
+  <div id="hint">マウスボタンを長押しして体験</div>
+
+  <script src="membrane.js"></script>
+  <script>
+    const effect = new MembraneEffect();
+    effect.mount();
+  </script>
+</body>
+</html>
