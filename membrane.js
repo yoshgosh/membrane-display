@@ -23,8 +23,6 @@ class MembraneEffect {
     this._shadowCtx     = null;
     this._mapCanvas     = null;
     this._mapCtx        = null;
-    this._shadeCanvas   = null;
-    this._shadeCtx      = null;
 
     this._boundMouseDown   = this._onMouseDown.bind(this);
     this._boundMouseUp     = this._onMouseUp.bind(this);
@@ -117,11 +115,6 @@ class MembraneEffect {
     this._mapCanvas.width  = 2 * this._maxR;
     this._mapCanvas.height = 2 * this._maxR;
     this._mapCtx           = this._mapCanvas.getContext('2d');
-
-    this._shadeCanvas        = document.createElement('canvas');
-    this._shadeCanvas.width  = 2 * this._maxR;
-    this._shadeCanvas.height = 2 * this._maxR;
-    this._shadeCtx           = this._shadeCanvas.getContext('2d');
   }
 
   _buildCanvas() {
@@ -266,48 +259,7 @@ class MembraneEffect {
     }
 
     ctx.putImageData(imageData, 0, 0);
-    this._generateShadeMap();
     this._feImageEl.setAttribute('href', this._mapCanvas.toDataURL('image/png'));
-  }
-
-  _generateShadeMap() {
-    const maxR   = this._maxR;
-    const maxR2  = maxR * maxR;
-    const size   = 2 * maxR;
-    // Wider sigma than displacement so the shading halo extends slightly beyond the distortion
-    // sigma controls how quickly shading fades toward the edge of the depression
-    const sigma  = maxR * 0.50;
-    const sigma2 = sigma * sigma;
-
-    const imageData = this._shadeCtx.createImageData(size, size);
-    const data      = imageData.data;
-
-    for (let y = 0; y < size; y++) {
-      const dy  = y - maxR; // positive = below center on screen
-      const dy2 = dy * dy;
-      for (let x = 0; x < size; x++) {
-        const dx = x - maxR;
-        const r2 = dx * dx + dy2;
-        const i  = (y * size + x) * 4;
-
-        if (r2 >= maxR2 || r2 < 0.25) { data[i + 3] = 0; continue; }
-
-        // Depth profile raised to a power: exponential relationship between depth and shade
-        const depth = Math.exp(-r2 / (2 * sigma2));
-        const shade = depth * depth;
-
-        // Smoothstep fade toward outer edge to avoid hard boundary
-        const r      = Math.sqrt(r2);
-        const normR  = r / maxR;
-        const t        = Math.max(0, (normR - 0.55) / 0.45);
-        const edgeFade = 1 - t * t * (3 - 2 * t);
-
-        data[i] = 0; data[i + 1] = 0; data[i + 2] = 0;
-        data[i + 3] = (shade * 255 * edgeFade + 0.5) | 0;
-      }
-    }
-
-    this._shadeCtx.putImageData(imageData, 0, 0);
   }
 
   _drawShadow() {
@@ -319,12 +271,27 @@ class MembraneEffect {
     ctx.clearRect(0, 0, W, H);
     if (p < 0.005) return;
 
-    // p² makes shade appear only when the dent is genuinely deep (exponential sync with distortion)
-    ctx.globalAlpha = p * p * this._shadowOpacity;
-    ctx.drawImage(this._shadeCanvas,
-                  this._clientX - this._maxR,
-                  this._clientY - this._maxR);
-    ctx.globalAlpha = 1;
+    const cx = this._clientX;
+    const cy = this._clientY;
+    const R  = this._maxR;
+
+    // sigma and alpha both scale with pressure — shape and darkness change continuously
+    const sigma = R * (0.20 + 0.30 * p);
+    const maxA  = p * p * this._shadowOpacity;
+
+    // Approximate Gaussian depth profile exp(-r²/σ²) with radial gradient stops
+    const grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, R);
+    for (let i = 0; i <= 10; i++) {
+      const t   = i / 10;
+      const r   = t * R;
+      const val = Math.exp(-(r * r) / (sigma * sigma));
+      grd.addColorStop(t, `rgba(0,0,0,${(maxA * val).toFixed(4)})`);
+    }
+
+    ctx.fillStyle = grd;
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, 0, Math.PI * 2);
+    ctx.fill();
   }
 
   _applyFilter() {
