@@ -1,7 +1,7 @@
 class MembraneEffect {
   constructor(options = {}) {
     this._maxR          = options.maxR          ?? 220;
-    this._pressRate     = options.pressRate     ?? 0.015;
+    this._pressRate     = options.pressRate     ?? 0.020;
     this._releaseRate   = options.releaseRate   ?? 0.005;
     this._shadowOpacity = options.shadowOpacity ?? 0.15;
     this._stopThreshold = 0.005;
