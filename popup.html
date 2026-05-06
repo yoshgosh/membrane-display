@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 220px;
+      padding: 16px;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f2f2f7;
+    }
+    h1 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #1c1c1e;
+      margin-bottom: 12px;
+    }
+    #toggle {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: background 0.15s;
+    }
+    #toggle.on  { background: #667eea; color: white; }
+    #toggle.off { background: #e5e5ea; color: #3c3c43; }
+    .hint {
+      margin-top: 10px;
+      font-size: 0.78rem;
+      color: #8e8e93;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>Membrane Display</h1>
+  <button id="toggle">読み込み中…</button>
+  <p class="hint">長押しで擬似触覚エフェクト</p>
+  <script src="popup.js"></script>
+</body>
+</html>

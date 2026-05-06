@@ -55,8 +55,6 @@ class MembraneEffect {
 
   _buildSVG() {
     const NS = 'http://www.w3.org/2000/svg';
-    const W  = window.innerWidth;
-    const H  = window.innerHeight;
 
     const svg = document.createElementNS(NS, 'svg');
     svg.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden;';
@@ -67,11 +65,11 @@ class MembraneEffect {
 
     const filter = document.createElementNS(NS, 'filter');
     filter.setAttribute('id',           'membrane-filter');
-    filter.setAttribute('filterUnits',  'userSpaceOnUse');
+    filter.setAttribute('filterUnits',  'objectBoundingBox');
     filter.setAttribute('x',            '0');
     filter.setAttribute('y',            '0');
-    filter.setAttribute('width',        String(W));
-    filter.setAttribute('height',       String(H));
+    filter.setAttribute('width',        '1');
+    filter.setAttribute('height',       '1');
     filter.setAttribute('color-interpolation-filters', 'sRGB');
     defs.appendChild(filter);
 
@@ -177,12 +175,8 @@ class MembraneEffect {
   }
 
   _onResize() {
-    const W = window.innerWidth;
-    const H = window.innerHeight;
-    this._filterEl.setAttribute('width',  String(W));
-    this._filterEl.setAttribute('height', String(H));
-    this._shadowCanvas.width  = W;
-    this._shadowCanvas.height = H;
+    this._shadowCanvas.width  = window.innerWidth;
+    this._shadowCanvas.height = window.innerHeight;
   }
 
   _startRAF() {

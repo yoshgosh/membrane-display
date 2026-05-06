@@ -13,7 +13,6 @@
       background: #f2f2f7;
       color: #1c1c1e;
       min-height: 100vh;
-      user-select: none;
     }
 
     /* Hero */
@@ -122,20 +121,6 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.12);
     }
 
-    /* Fixed hint — lives in <body> but must stay viewport-relative even when filter on <html> */
-    #hint {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: rgba(0,0,0,0.72);
-      color: white;
-      padding: 10px 16px;
-      border-radius: 10px;
-      font-size: 0.82rem;
-      pointer-events: none;
-      z-index: 9999;
-      backdrop-filter: blur(4px);
-    }
   </style>
 </head>
 <body>
@@ -187,12 +172,5 @@
     <div class="tile" style="background:#9b59b6;">Purple</div>
   </div>
 
-  <div id="hint">マウスボタンを長押しして体験</div>
-
-  <script src="membrane.js"></script>
-  <script>
-    const effect = new MembraneEffect();
-    effect.mount();
-  </script>
 </body>
 </html>
