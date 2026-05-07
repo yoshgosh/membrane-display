@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Grid</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 100vw;
+      height: 100vh;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+<canvas id="grid"></canvas>
+<script src="membrane-fixed.js"></script>
+<script>
+  // ── 設定定数 ──────────────────────────────────────────
+  const LINE_WIDTH   = 1;     // グリッド線の太さ (px)
+  const CELL_SIZE    = 40;    // グリッドの間隔 (px)
+  const GRID_COUNT   = 9;    // グリッドの数 N (N×N)
+  const SHOW_BORDER  = false;  // グリッド端のボーダーを表示するか
+  const USE_MEMBRANE = true;  // membrane-fixed エフェクトを適用するか
+  const ANTI_ALIAS   = true;  // アンチエイリアスを適用するか (false でピクセル境界に揃える)
+  // ─────────────────────────────────────────────────────
+
+  const canvas     = document.getElementById('grid');
+  const ctx        = canvas.getContext('2d');
+  const totalSize  = CELL_SIZE * GRID_COUNT;
+  // 外枠線が canvas 端でクリップされないよう LINE_WIDTH 分だけ canvas を広げる
+  const canvasSize = totalSize + LINE_WIDTH;
+
+  canvas.width  = canvasSize;
+  canvas.height = canvasSize;
+
+  function drawGrid() {
+    ctx.clearRect(0, 0, canvasSize, canvasSize);
+
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvasSize, canvasSize);
+
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth   = LINE_WIDTH;
+
+    // 線の中心が canvas 端に来ないよう LINE_WIDTH/2 だけ内側にシフト
+    const borderOffset = LINE_WIDTH / 2;
+    // ANTI_ALIAS = false のとき 0.5 オフセットで線をピクセル境界に揃えてシャープに描画
+    const aaOffset     = ANTI_ALIAS ? 0 : 0.5;
+
+    ctx.beginPath();
+
+    for (let i = 0; i <= GRID_COUNT; i++) {
+      if (!SHOW_BORDER && (i === 0 || i === GRID_COUNT)) continue;
+
+      const pos = borderOffset + i * CELL_SIZE + aaOffset;
+
+      // 縦線
+      ctx.moveTo(pos, 0);
+      ctx.lineTo(pos, canvasSize);
+
+      // 横線
+      ctx.moveTo(0, pos);
+      ctx.lineTo(canvasSize, pos);
+    }
+
+    ctx.stroke();
+  }
+
+  drawGrid();
+
+  if (USE_MEMBRANE) {
+    const membrane = new MembraneFixed();
+    membrane.mount();
+  }
+</script>
+</body>
+</html>
