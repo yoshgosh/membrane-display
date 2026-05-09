@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Membrane Display</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Serif JP', serif;
+      background: #fff;
+      color: #111;
+    }
+
+    .page {
+      width: 794px;
+      margin: 0 auto;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .title {
+      font-size: 52px;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      line-height: 1.1;
+      font-family: 'Georgia', 'Noto Serif JP', serif;
+    }
+
+    /* Main image */
+    .main-image-wrapper {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 0;
+    }
+
+    .main-image-wrapper img {
+      max-width: 100%;
+      max-height: 380px;
+      object-fit: contain;
+      clip-path: inset(0 0 10px 0);
+    }
+
+    /* Section heading */
+    .section-heading {
+      font-size: 42px;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: 0.04em;
+      margin-top: 8px;
+      margin-bottom: 4px;
+    }
+
+    .tagline {
+      text-align: center;
+      font-size: 14px;
+      margin-bottom: 56px;
+    }
+
+    /* Bottom section: text + image2 */
+    .bottom-section {
+      display: flex;
+      gap: 32px;
+      align-items: stretch;
+    }
+
+    .body-text {
+      flex: 15;
+      font-size: 14.5px;
+      line-height: 1.95;
+      text-align: justify;
+      letter-spacing: 0.01em;
+    }
+
+    .body-text p {
+      text-indent: 0.5em;
+    }
+
+    .body-text p + p {
+      margin-top: 0.5em;
+    }
+
+    .side-image {
+      flex: 7;
+    }
+
+    .side-image img {
+      width: 100%;
+      display: block;
+    }
+
+    .github-link {
+      display: inline-block;
+      align-self: center;
+      margin-top: 32px;
+      padding: 8px 24px;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 13px;
+      color: #111;
+      background: #fff;
+      border: 1.5px solid #111;
+      text-decoration: none;
+      text-align: center;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .github-link:hover {
+      background: #111;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="title">Membrane Display</div>
+    </div>
+
+    <div class="main-image-wrapper">
+      <img src="image1.png" alt="画面を指で押し込む様子のイラスト">
+    </div>
+
+    <div class="section-heading">画面が凹む擬似触覚</div>
+    <p class="tagline">クリックすると画面が凹む</p>
+
+    <div class="bottom-section">
+      <div class="body-text">
+        <p>
+          トラックパッド押下時に，描画画像へ幾何学的歪みと光学的減光を付与することで，画面が凹むような視覚表現を提示する．入力時の物理的な押し込みと画面上の視覚的な凹みを同期させることで，画面自体を押し込んでいるかのような擬似触覚を生起させる．
+        </p>
+        <p>
+          描画レイヤーへのポストプロセスとして実装されているため，WebページのDOM構造や動作に干渉しない．Chrome拡張機能として実装されており，任意のWebページへ適用可能である．
+        </p>
+      </div>
+      <div class="side-image">
+        <img src="image2.png" alt="グリッド歪みのイメージ">
+      </div>
+    </div>
+
+    <a class="github-link" href="https://github.com/yoshgosh/membrane-display" target="_blank" rel="noopener">GitHub</a>
+  </div>
+  <script src="membrane.js"></script>
+  <script>new MembraneEffect().mount();</script>
+</body>
+</html>
