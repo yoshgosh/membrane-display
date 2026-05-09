@@ -2,6 +2,8 @@
 
 画面を長押しすると凹むような擬似触覚エフェクトを追加する Chrome 拡張機能。
 
+![Membrane Display](image1.png)
+
 ## インストール
 
 1. Chrome で `chrome://extensions` を開く
